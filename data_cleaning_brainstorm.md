@@ -82,6 +82,7 @@ contrained input - e.g., google docs
   - Sign up: Google forms
   - Advertise to Life Sciences
 	- Ecology, PLS, Geo, Soils, 
+        - possibly Watershed sciences/Hydrology, Civil Engineering, Psychology and Social Sciences, Life Sciences
 	- Grad students/post-docs
 	- Target entry-level R
 	  - What you did not learn in your stats classes
@@ -106,7 +107,9 @@ TO DO:
  - why are we here 
    - motivation
    - what can go wrong
-   - 
+   - possible errors when 
+     - collecting data and 
+     - computating on data
    
  - Break apart brainstorm (10 min)
  - list we make (~20 min mark)
@@ -122,8 +125,13 @@ TO DO:
    - print to console vs. actual data type
    
  Guidelines:
-   - Check class
-   - classes of variables
+   - Check class of data object
+   - dimensions of data, names of variables
+   - structure of the data - str()
+   - summary() of the data
+   - classes of variables/columns
+   - <aside/teaching moment> understand the data structures
+   -
    - unique values
    - distributions (text & graphics)
 	 - categorical 
@@ -139,10 +147,9 @@ TO DO:
 	 - systematic error
    - outliers/inliers
    - implied NAs (e.g. 999)
-   - groups - check expected number
-   - merge
-   - verify
-   - conversion to date/time
+   - groups - check expected number in each group
+   - merge datasets and verify the results
+   - conversion of columns to date/time
    
 Default - 4 hours, drop in session
 
