@@ -39,7 +39,7 @@ contrained input - e.g., google docs
   - Success story: make life easier in long run
   - Get a plan
 	- concepts
-	- 
+
   - Think 
   - constantly evolving, tools improving
   - don't learn writing by copying sentences, concepts reqiure more work
