@@ -13,9 +13,64 @@ Mistakes happen. Typos, switched records, missing data - these are the
 things you never have to deal with in statistics classes, yet can take
 up 80\% of any data analysis effort.
 
-## Example:
 
-  - read in data
+```{r}
+# The read.* functions import data from various formats
+
+rice_data <- read.csv("RICE-AcreageYieldProductionandPrice-2016-05-14.csv", header = TRUE)
+
+```
+
+Great - now what? First, lets look at some of the basics of how the data are being stored in R.
+
+```{r}
+# class reports the class of the object
+class(rice_data)
+
+# data.frame is one of the basic data structures in R
+# Although it displays similar to a Excel spreadsheet, 
+# R stores it as a collection of columns
+
+# How big is this data.frame?
+dim(rice_data)
+nrow(rice_data)
+ncol(rice_data)
+
+# What variables are in the data.frame?
+colnames(rice_data)
+str(rice_data)
+
+# We can look at just the top and bottom of an object
+head(rice_data)
+tail(rice_data)
+
+# We can pull out a single column using subsetting
+# There are many different ways to subset in R
+# We can pull out the column by name using the "$" operator
+head(rice_data$LOCATION)
+
+# Or we can pull out a column by number using the "[" operator
+# the "[" operator subsets by index - for data.frames there are two indices
+# rows and columns. The "[" works like this [row#, column#]
+# if you leave one of the indices blank, R will return all values for that index
+
+# To select the first column
+head(rice_data[,1])
+
+# And the first row
+rice_data[1,]
+
+# And finally, the value in the first row, first column
+rice_data[1,1]
+
+# Notice that each piece of the data.frame has its own class
+# Many of the columns have class "factor"
+# What is a factor?
+# typeof will tell us the basic data type
+typeof(rice_data$LOCATION)
+```
+
+- read in data
 
   - explain data types
 
