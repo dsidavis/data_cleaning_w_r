@@ -1,0 +1,76 @@
+---
+title: "Simple Guidelines for Cleaning Data in R"
+author: "Duncan Temple Lang and Matt Espe"
+date: \today{}
+geometry: margin=1in
+output:
+pdfdocument:
+---
+
+# Motivation
+
+Mistakes happen. Typos, switched records, missing data - these are the
+things you never have to deal with in statistics classes, yet can take
+up 80\% of any data analysis effort.
+
+## Example:
+
+  - read in data
+
+  - explain data types
+
+
+# Core data types:
+
+  - matrix vs data.frame
+
+  - print to console vs. actual data type
+
+
+# Guidelines:
+
+  - Check class of data object
+
+  - dimensions of data, names of variables
+
+  - structure of the data - str()
+
+  - summary() of the data
+
+  - classes of variables/columns
+
+  - <aside/teaching moment> understand the data structures
+
+  - unique values
+
+  - distributions (text & graphics)
+
+    - categorical
+	
+    - numeric
+	
+    - incorrect levels (typos)
+	
+  - names
+  
+  - dims
+  
+  - verify random rows vs. top/bottom
+  
+  - missing values - distribution/location
+  
+    - drift
+	
+    - missing in time
+	
+    - systematic error
+	
+  - outliers/inliers
+  
+  - implied NAs (e.g. 999)
+  
+  - groups - check expected number in each group
+  
+  - merge datasets and verify the results
+  
+  - conversion of columns to date/time
