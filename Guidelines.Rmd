@@ -7,28 +7,41 @@ output:
 pdfdocument:
 ---
 
+```{r echo = FALSE}
+# Set some options to make the document easier to read
+options(max.print = 100)
+```
+
 # Motivation
 
 Mistakes happen. Typos, switched records, missing data - these are the
 things you never have to deal with in statistics classes, yet can take
-up 80\% of any data analysis effort.
+up 80\% of any data analysis effort in the real world. In most
+statistics classes, you might do the following:
 
 
 ```{r}
 # The read.* functions import data from various formats
-
 rice_data <- read.csv("RICE-AcreageYieldProductionandPrice-2016-05-14.csv", header = TRUE)
 
 ```
 
-Great - now what? First, lets look at some of the basics of how the data are being stored in R.
+Great - now what? In classes, you are often given data that are
+already cleaned and free of issues. But few will be so lucky with real
+data. Where do you start?
+
+First, lets look at some of the basics of how the data are being
+stored in R. Investigating data when it is first imported into R can
+help you spot issues early on.
+
+# Basics of R objects
 
 ```{r}
 # class reports the class of the object
 class(rice_data)
 
 # data.frame is one of the basic data structures in R
-# Although it displays similar to a Excel spreadsheet, 
+# Although it displays similarly to a Excel spreadsheet, 
 # R stores it as a collection of columns
 
 # How big is this data.frame?
@@ -38,16 +51,17 @@ ncol(rice_data)
 
 # What variables are in the data.frame?
 colnames(rice_data)
-str(rice_data)
 
-# We can look at just the top and bottom of an object
-head(rice_data)
-tail(rice_data)
+# the str function gives us the structure of the object,
+# including its class, its component pieces and their classes,
+# and its dimensions.
+# Very helpful to get lots of information
+str(rice_data)
 
 # We can pull out a single column using subsetting
 # There are many different ways to subset in R
 # We can pull out the column by name using the "$" operator
-head(rice_data$LOCATION)
+rice_data$LOCATION
 
 # Or we can pull out a column by number using the "[" operator
 # the "[" operator subsets by index - for data.frames there are two indices
@@ -55,7 +69,7 @@ head(rice_data$LOCATION)
 # if you leave one of the indices blank, R will return all values for that index
 
 # To select the first column
-head(rice_data[,1])
+rice_data[,1]
 
 # And the first row
 rice_data[1,]
@@ -63,69 +77,70 @@ rice_data[1,]
 # And finally, the value in the first row, first column
 rice_data[1,1]
 
-# Notice that each piece of the data.frame has its own class
-# Many of the columns have class "factor"
+# We can also look at just the top and bottom of an object
+head(rice_data$LOCATION)
+tail(rice_data$LOCATION)
+
+# Using the str function, we found that each piece of the data.frame
+# has its own class. Many of the columns have class "factor"
 # What is a factor?
 # typeof will tell us the basic data type
 typeof(rice_data$LOCATION)
+
+# This can be very confusing. When we printed the "LOCATION" column,
+# it did not look like an integer, but rather names of the locations.
+# Factors are a special class which are stored as integers, with each
+# integer "mapped" to a level (i.e., a label)
+levels(rice_data$LOCATION)
+
+# Remember that a data.frame was a collection of columns?
+# What data type is the data.frame?
+typeof(rice_data)
+
+# A data.frame is a special list where each piece has the same length.
+# A list is a collection of objects, and can be very general. Each element
+# of a list can be completely different classes, with different dimensions.
+
 ```
 
+## Review
+
+  - Inspecting the structure of your data can reveal issues early on.
+  - There are fuctions in R that allow you to inspect many aspects of how data are stored and represented.
+  - Subsetting allows you to isolate part of a data structure
+  
+# Finding problems
+
 - read in data
-
   - explain data types
-
 
 # Core data types:
 
   - matrix vs data.frame
-
   - print to console vs. actual data type
-
 
 # Guidelines:
 
   - Check class of data object
-
   - dimensions of data, names of variables
-
   - structure of the data - str()
-
   - summary() of the data
-
   - classes of variables/columns
-
   - <aside/teaching moment> understand the data structures
-
   - unique values
-
   - distributions (text & graphics)
-
     - categorical
-	
     - numeric
-	
     - incorrect levels (typos)
-	
   - names
-  
   - dims
-  
-  - verify random rows vs. top/bottom
-  
-  - missing values - distribution/location
-  
-    - drift
-	
-    - missing in time
-	
+  - verify random rows vs. top/bottom  
+  - missing values - distribution/location  
+    - drift	
+    - missing in time	
     - systematic error
-	
   - outliers/inliers
-  
-  - implied NAs (e.g. 999)
-  
+  - implied NAs (e.g. 999) 
   - groups - check expected number in each group
-  
   - merge datasets and verify the results
-  
   - conversion of columns to date/time
