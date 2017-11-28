@@ -160,8 +160,17 @@ typeof(rice_data)
 + Values in a row may belong to other columns  (e.g. missing a , to indicate blank cell, or too many ,)
   + Fix following columns.
   
-+ Check dates make sens
++ Check dates make sense
   + Valid days of they year (e.g., not Feb 31st, check leap year)
   + Most dates on same day, but few not, e.g. Wednesday, and a few on Saturday.
   + Month and day possibly reversed
   + Year recorded with 4 and 2 digits.
+
++ Check times make sense
+
+
++ Are several observations messed up
+   + If several are wrong, they may hide each other as being outliers/errors.
+      + All from the same level
+      + All from the same data collector/entry person
+      + Repeated measurements from same 
