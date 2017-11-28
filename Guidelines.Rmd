@@ -1,8 +1,7 @@
 ---
 title: "Simple Guidelines for Cleaning Data in R"
-author: "Duncan Temple Lang and Matt Espe"
+author: "Matt Espe and Duncan Temple Lang"
 date: \today{}
-geometry: margin=1in
 output:
 pdfdocument:
 ---
@@ -144,3 +143,25 @@ typeof(rice_data)
   - groups - check expected number in each group
   - merge datasets and verify the results
   - conversion of columns to date/time
+
+
+  - Understand how data was recorded and how errors could have been introduced 
+    - Dates in different countries
+    - Character encodings
+    - Excel thinking 
+    
+### Univariate Checks
++ Verify values are from appropriate set/interval
+  + Look at range of each variable
+  + Check levels of factors
+  + See if there are spelling errors (adist())
++ Consider OpenRefine  (interactive and not necessarily reproducible)
+
++ Values in a row may belong to other columns  (e.g. missing a , to indicate blank cell, or too many ,)
+  + Fix following columns.
+  
++ Check dates make sens
+  + Valid days of they year (e.g., not Feb 31st, check leap year)
+  + Most dates on same day, but few not, e.g. Wednesday, and a few on Saturday.
+  + Month and day possibly reversed
+  + Year recorded with 4 and 2 digits.
