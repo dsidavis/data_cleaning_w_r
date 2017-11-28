@@ -4,6 +4,7 @@ Consider the Minnesota barley data set with data from
 
 Are there any anomolies?
 
+
 library(lattice)
 data(barley)
 
@@ -27,4 +28,6 @@ dotplot(variety ~ yield | year, groups = site, data=barley)
 dotplot(variety ~ yield | site, groups = year, data=barley)
 	 
 
-http://blog.revolutionanalytics.com/2014/07/theres-no-mistake-in-the-barley-data.html
++ Visualizing Data, W. S. Cleveland. Hobart Press.
++ http://blog.revolutionanalytics.com/2014/07/theres-no-mistake-in-the-barley-data.html
++ http://www.tandfonline.com/doi/abs/10.1080/00031305.2013.801783
