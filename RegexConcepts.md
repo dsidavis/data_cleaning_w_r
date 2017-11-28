@@ -17,3 +17,6 @@
 + Greedy matching - default
    + Lazy matching also possible.
 
++ Programmatically generate regular expression
+   + ``` sprintf("(%s)", paste(terms, collapse = "|"))
+     ```
