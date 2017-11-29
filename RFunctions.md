@@ -2,6 +2,7 @@
 # R Functions
 
 + grep() and grepl()
+   + fixed = TRUE/FALSE
 + gregexpr() and regexpr()
 + regmatches()
 + sub() and gsub()

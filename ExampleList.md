@@ -14,6 +14,16 @@
 + Email SMTP log data across machines
 
 
+## More Comprehensive Regular Expression Examples
+
++ NASA (see nasa.md)
++ Year_First in Species.csv
+
++ Alternation & Programmatic generation of regexp.
+```
+sprintf("(%s)", paste(format(seq(as.Date("2017/1/1"), length = 12, by = "month"), "%B"), collapse = "|"))
+```
+
 ### Regular Expressions
 + Money amounts ($124,000   $12.02, ....)
 + Numbers  (123,423   1234534)
@@ -53,11 +63,15 @@ gsub("\\.pdf$", ".xml", filenames)
 
 
 
-### XML 
+### XML, JSON
   + don't use regular expressions
 
 ### Natural Language Processing
   + Free text parts of speech
   + Entity recognition and extraction
+
+### Addresses
+  + Use Geocoding API
+
 
 
