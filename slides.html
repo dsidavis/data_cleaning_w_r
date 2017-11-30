@@ -142,6 +142,114 @@ Invariant to order of rows/columns. If the data are already corrected,
 has no effect.
 
 But writing software is more effort (higher cost), requires more thought.
+---
+
+# R Functions which use Regex
+
++ grep() and grepl()
++ gregexpr() and regexpr()
++ regmatches()
++ sub() and gsub()
++ strsplit()
++ agrep()
++ adist()
+
++ Others from stringr and stringi packages.
+   + e.g. str_extract()
+
+
+## Shell Commands
+
++ grep, egrep, ag
++ find
+---
+
+# Regex Elements
+
++ Literals
+
++ Wildcard Character  `.`
+
++ Character Classes
+
++ Negated Character Classes
+
++ Positional Matching - Anchors  `^` `$`
+
+
++ Alternation
+
++ Case Insensitive matching
+
++ Word boundaries
+
++ Quantifiers
+
++ Grouping and Back-References ()
+
+---
+# Regex Extensions
+
+  + Non-greedy Matching
+      + Problems with greedy matching.
+  	  + Common simple case, simple solution
+	     + Anything except this character
+	     + or any of these characters
+      + *?
+
++ Positive Lookahead and Behind
+
++ Negative Lookahead and Behind
+
+---
+## Literals
+
+---
+					
+## Wildcard Character  `.`
+
+---
+## Character Classes
+---
+## Negated Character Classes
+---
+## Positional Matching - Anchors  `^` `$`
+---
+
+## Alternation
+---
+## Case Insensitive matching
+---
+## Word boundaries
+---
+## Quantifiers
+   + Optional pattern ?
+   + Zero or more  *
+   + One or more  \+
+   + m or more   `{m,}`
+   + n or fewer   `{,n}`
+   + between m and n  `{m,n}`
+---
+## Grouping and Back-References ()
+   +  () and \\1, \\2, etc.
+   
+---
+
+
+## Extensions
+---
+### Non-greedy Matching
+    + Problems with greedy matching.
+	+ Common simple case, simple solution
+	   + Anything except this character
+	   + or any of these characters
+    + *?
+---
+### Positive Lookahead and Behind
+    + (?=  )   (?<= )
+---	
+### Negative Lookahead and Behind
+    + (?!  )   (?<! )	
 
 
 
