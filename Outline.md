@@ -1,10 +1,8 @@
 
 Workshop Topics
-+ Reading Data
 + Cleaning Data
-+ Regular Expressions
-
-(Probably too ambitious for 2 hours.)
++ Regular Expressions for cleaning and transforming
++ Reading Data using regular expressions
 
 
 + Cleaning data requires judgement and decision making in the presence of ambiguity.

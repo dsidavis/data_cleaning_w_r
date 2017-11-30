@@ -65,11 +65,34 @@ Clean the "¥Ë_" out -
 1. Find start with "E"
 1. Look for the ones which have %d-%m-%Y,
 1. programmatically generate month names (why? gets the locale correct)
-1. Find pattern, grep for that, then look for the ones that don't match
-1. that pattern.
+1. Find pattern, grep for that, then look for the ones that don't match that pattern.
 1. Then look for second pattern. 
 1. For the range, want to split and keep the other value and shove in to
-1. the Year_End column.
+    the Year_End column.
 1. Looking for day of month, should do properly - has to be between
    0-31, programmatically generate the alternation. 
-1. 
+
+
+
+
+### What to show
+1. Dates
+   + Find weird characters and remove.  In $date
+   + Looking for years. So as.integer()
+   + Look at the NAs for the patterns
+   + Figure out how to convert these patterns to year,  but also keep the original data  so we have
+     the month.
+      +  Very liberal regexp and then more specific with the abbreviated month names
+    	  + show programmatically generating regexp.
+	      + Also make more specific for date ie. day of month in 1 - 31 (but don't deal 30 of Feb.
+             Deal with this after we convert to a Date object, i.e. in R not in regexp. )
+	  + Look at "residuals"	
+	      + Ranges in from 1990-2000  or 1990, 2000
+		  + Get first year
+		  + If corresponding last year is NA, then use the end of range.
+		  + Final pattern is "find 4 digit number of form 19.. or 20.. and remove all other text" -
+            not guaranteed to work . Context specific.
+			
+ For what we cannot fix and even those for which we are 90% certain, we need to verify with
+ owners/creators of data.
+	  

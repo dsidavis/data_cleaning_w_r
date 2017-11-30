@@ -1,3 +1,5 @@
+<link rel="stylesheet" type="text/css" media="all" href="callout.css" />
+
 # Cleaning Data Example
 
 There are general guidelines and steps in cleaning data.
@@ -52,7 +54,7 @@ formatting in Excel one way but appearing in the cell and CSV as something else?
 
 
 ## Summary
-The summary() function gives us a sanity check 
+The summary() function gives us a sanity check  on the values in each of the columns
 ```
 summary(d)
 ```
@@ -204,11 +206,56 @@ d[i, "br"] = d[i, "street"] = NA
 ```
 
 
-### How do we make a note? 
-+ Where do we put it? 
-+ What format should it have so we can actually process and
+<div class="inset">
+<h4>How do we make a note? </h4>
+
+<ul>
+<li> Where do we put it? 
+<li> What format should it have so we can actually process and
 use it later?
+</ul>
+</div>
+
+We can look at the 28 NAs in the zip column.
+There are now 27 since we corrected one.
+Two of these will be the 2nd and 4th rows above which are essentially useless.
+So we should discard these first.
+We can identify their row numbers (manually or programmatically).
+But what happens if we add or remove other rows and then run this code again. Then these row numbers will become 
+incorrect and we will potentially delete/modify valid rows.
+We can modify the CSV file (and the Excel file if that is the origin of the CSV file).
+Where to modify so that we have consistency and reproducability is an important decision.
+When cleaning and writing code to clean, we can identify these rows in richer ways than
+manually identifying them. We want the rows 
+
+
+<!-- 
+Writing general filters
+-->
+If the criterion is that all values in important columns are NAs, then we use this:
+```
+essentialVars = c("zip", "street", "price", "br", "lsqft", "bsqft", "date")
+tmp = lapply(d[ essentialVars ], function(x) is.na(x)  | x == "")
+tmp1 = Reduce(`&`, tmp)
+```
+If the criterion is the county name is a date, then we find it with some sort of way 
+of finding a date. In this case, we'll say it doesn't contain the word County and we'll use
+lower-case
+```
+!grepl("county", d$county, ignore.case = TRUE)
+```
+Or if we want no numbers
+```
+!grepl("[0-9]", d$county)
+```
+Both match our two rows. But they both work generally if the CSV file gets updated.
+And they also are more general than the 
+
+The number of NAs in the other columns are very large and we'll have to examine these during
+the EDA (Exploratory Data Analysis) stages. Note that cleaning and EDA are very intertwined and
+iterative.
+We clean while we are exploring and we explore while we clean.
 
 
 
-
+##

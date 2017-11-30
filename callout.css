@@ -1,0 +1,6 @@
+.inset {
+    xpadding: 100px;
+    margin-left: 100px;
+    border: solid 1pt red;
+    background: lightgray;
+}
