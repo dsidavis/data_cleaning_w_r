@@ -77,7 +77,9 @@ layout: true
 
 + Cleaning requires thought about how the data collection could lead to errors.
    + Often general problems, but always possible context-specific issues.
-      +
+
++ Cleaning should exist as part of the data lifecycle, not separate
+from it.
 
 ---
 
@@ -85,6 +87,65 @@ See [Barley.md](Barley.md)
 
 ---
 
+# The Data Lifecycle
+
+Is this how we use data?
+
+<img src="linear.png" alt="USGS Data lifecycle" style="width: 800px;"/>
+
+---
+
+# Data Lifecycle (cont.)
+
++ In most cases, this is a cycle, not linear. E.g., you use the data, find
+issues, fix them, get more data, etc. 
+  + Data created
+  + Cleaned/processed 
+  + "Used" in some way
+
++ What if the original data is changed after it is cleaned?
+
++ What if the end or intermediate use is in Excel/GoogleSheets/OpenRefine, etc.?
+
+---
+# Program defensively!
+
+Don't assume:
++ The data will never change
++ You will forever remember what you were doing in this moment
++ Your assumptions are correct (e.g., you might need to go back and correct
+  a bad "fix")
++ You understand perfectly how errors occurred
+
+Aim to write software rather than scripts
+
+---
+
+# Writing a script vs. software
+
++ script: fixes instances, (maybe) specialized to the data, assumes the data are
+static. Breaks if the data change, assumes a linear workflow.
+
+```
+df[12, 3] = "Bob"
+```
+Why row 12? Why column 3? What if Dr. Smarty-pants inserts a new
+column in position 1?
+
++ software: flexible to fix conditions, not specific instances. Data
+can change without breaking script
+
+```
+df$names[df$names == "bob"] = "Bob" 
+```
+Invariant to order of rows/columns. If the data are already corrected,
+has no effect.
+
+But writing software is more effort (higher cost), requires more thought.
+
+
+
+---
     </textarea>
     <script src="https://remarkjs.com/downloads/remark-latest.min.js">
     </script>
