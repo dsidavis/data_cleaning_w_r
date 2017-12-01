@@ -317,8 +317,166 @@ This seems to be all the ones. So we can use this as
 ```
 w = is.na(d$startYear) & d$Year_First != ""
 tmp = gsub(rx, "\\2", d$Year_First[w])
+d$startYear[w] = as.integer(tmp)
 ```
 
+We are now left with only 58 NA values in startYear:
+```
+table(is.na(d$startYear))
+```
+These correspond to 
+```
+rem = unique(d$Year_First[is.na(d$startYear)])
+rem
+```
+
+Let's deal with the range of years that appear with a , or a - and two years.
+Let's find these 
+```
+grep(", |-", rem, value = TRUE)
+ [1] "2007-08"    "1960, 1985" "1971, 1983" "2007-2009"  "10-Aug"    
+ [6] "1995-2004"  "1960-1962"  "8-Aug"      "7-Oct"      "6-Feb"     
+[11] "1997-1998"  "1986-1987"  "8-Sep"      "9-Nov"      "9-Oct"     
+[16] "10-Sep"     "3-May"      "8-Jul"      "11-Feb"     "2011-12"   
+[21] "9-Mar"      "8-Jun"      "15-Sep"     "12-Aug"     "2005-08"   
+[26] "7-Aug"      "9-Aug"      "1982-1983" 
+```
+We want to avoid the day-monthName. We also have one element that has the end year
+as two digits: 2007-08. Otherwise, we could look for 4 digits, a - and then four digits.
+We also want our regular expression to be **as general as we need it for this data set and not any
+more general (for other potential data sets)**.
+So let's find the 4year-4year first:
+```
+rx = "[0-9]{4}-[0-9]{4}"
+```
+We can see which elements this matches, and which it doesn't with:
+```
+grep(rx, rem, value = TRUE)
+grep(rx, rem, value = TRUE, invert = TRUE)
+```
+So let's allow the two-digit end year:
+```
+```
+rx = "[0-9]{4}-[0-9]{2,4}"
+grep(rx, rem, value = TRUE)
+grep(rx, rem, value = TRUE, invert = TRUE)
+```
+That gets what we want.
+
+We could deal with the ", " format separately. However, it is very similar
+so we can incorporate both the "-" and ", " range separator into the same regular expression:
+```
+rx = "[0-9]{4}(-|, )[0-9]{2,4}"
+grep(rx, rem, value = TRUE)
+grep(rx, rem, value = TRUE, invert = TRUE)
+```
+
+So we can begin to apply this to Year_First and then update startYear.
+Note however, we need the first year in the range, not the entire string.  Also,
+we would like to take the second year in the range and use that to set the Year_Last column if
+the corresponding element there is currently NA.
+This is different from what we have been doing in earlier extractions above, but it is still feasible.
+
+We first find the elements of Year_First we want to process by looking for the NA values in startYear
+```
+w = is.na(d$startYear) & d$Year_First != ""
+```
+
+We'll adapt our regular expression (rx) above slightly to put parentheses around
+the two year parts so we can refer to them via backreferences.
+```
+rx = "([0-9]{4})(-|, )([0-9]{2,4})"
+```
+The starting year  will be in \\1, if there was a match. And we can convert that to an integer
+and use that value for startYear.
+```
+tmp = gsub(rx, "\\1", d$Year_First[w])
+d$startYear[w] = as.integer(tmp)
+```
+
+We can set the second/end year in Year_Last with:
+```
+w = w & is.na(d$Year_Last)
+d$Year_Last[w] = as.integer(gsub(rx, "\\3", d$Year_First[w]))
+```
+Here we focus not just on the NA values in Year_First, but those for which Year_Last is also NA.
+Then we process those elements of Year_First and extract the 3rd backreference, if there was a
+match.  If there was no match, the as.integer() will give an NA.
+
+
+### Making the 2-digit Years into 4-digits
+
+Rather than deal with the two-digit end year, we could substitute in the first two digits.
+So 2005-08 would become 2005-2008. We could do this with, e.g.,
+```
+gsub("^([0-9]{4})-([0-9]{2})$", "\\1-20\\2", "2005-08")
+```
+Note that we added ^ and $ to ensure we didn't match any string with more than 4 digits before the -
+and, most importantly, the first two digits of a four digit year, e.g.  2007-2008.
+Without the $ in the regular expression, we would get
+```
+gsub("^([0-9]{4})-([0-9]{2})", "\\1-20\\2", "2005-2008")
+```
+```
+[1] "2005-202008"
+```
+
+
+## The Remaining Elements
+We'll now deal with the remaining elements which are
+```
+ [1] "Autumn 2003"                "Mosquitoes fed from animal"
+ [3] "1983 original isolation"    "1967 original isolation"   
+ [5] "1971 original isolation"    "10-Aug"                    
+ [7] "8-Aug"                      "7-Oct"                     
+ [9] "6-Feb"                      "8-Sep"                     
+[11] "9-Nov"                      "9-Oct"                     
+[13] "10-Sep"                     "3-May"                     
+[15] "8-Jul"                      "11-Feb"                    
+[17] "9-Mar"                      "8-Jun"                     
+[19] "15-Sep"                     "12-Aug"                    
+[21] "7-Aug"                      "9-Aug"                     
+[23] "8305 E"                     "E23312421"                 
+[25] "1968 original isolation"   
+```
+We want the 2003, 1983, 1967, 1968, i.e. any 4 digits in a row and ignore the rest
+of the text.
+This would ignore (not match), e.g., the 12-Aug string.
+However, this would also match parts of the "8305 E" and also "E23312421" strings.
+So we are looking for 4 digits that start with 19 or 20.
+Note that we also have to discard the rest of the characters in the string
+We can write this with
+```
+rx = ".*\\b((19|20)[0-9]{2})\\b.*"
+gsub(, "\\1", rem)
+```
+
+We can use this now to extract the remaining years:
+```
+w = is.na(d$startYear) & d$Year_First != ""
+tmp = gsub(rx, "\\1", d$Year_First[w])
+d$startYear[w] = as.integer(tmp)
+```
+
+
+Again, we can look the elements of Year_First for which we did not get a year with
+```
+rem = unique(d$Year_First[is.na(d$startYear)])
+rem
+```
+```
+ [1] "Mosquitoes fed from animal" "10-Aug"                    
+ [3] "8-Aug"                      "7-Oct"                     
+ [5] "6-Feb"                      "8-Sep"                     
+ [7] "9-Nov"                      "9-Oct"                     
+ [9] "10-Sep"                     "3-May"                     
+[11] "8-Jul"                      "11-Feb"                    
+[13] "9-Mar"                      "8-Jun"                     
+[15] "15-Sep"                     "12-Aug"                    
+[17] "7-Aug"                      "9-Aug"                     
+[19] "8305 E"                     "E23312421"                 
+```
+These do not contain a year and so we are done!
 
 
 # More Specific Regular Expressions
