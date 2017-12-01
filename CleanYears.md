@@ -226,13 +226,101 @@ have a corresponding NA value in d$startYear, i.e. for which as.integer(d$Year_F
 We do this with:
 ```
 w = is.na(d$startYear)
-tmp = gsub("[0-9]{1,2}-[A-Z][a-z]{2}-([0-9]{2}|[0-9]{4})", "\\1", d$Year_First[w])
-d$startYear[w] = as.integer(tmp)
+tmp = gsub("[0-9]{1,2}-[A-Z][a-z]{2}-([0-9]{2})", "\\1", d$Year_First[w])
+d$startYear[w] = as.integer(paste0("20", tmp))
 ```
+Note that we prepended the strings with 20 to make them 4 digits, e.g., 08 to 2008.
 Again, recall that gsub() will leave strings unaltered if the regular expression doesn't match.
-Accordingly, for these, as.integer() will again return NA. So we will only update the 
+Accordingly, for these, as.integer() will again return NA. So we will only change the 
+elements of startYear which gave us a legitimate integer. 
+We can also check that values are between 1900 and 2017.
+
+So let's take a look and see what values we got  in this step:
+```
+table(tmp[!is.na(as.integer(paste0("20", tmp)))])
+```
+```
+       01   02   03   04   05   06   07   08   09   10   11   12   13 
+2788    9   58   35   69   93   47   18   23   45   25    7   17    2 
+  14   15   47   89   93 
+   3    1    1    1    2 
+```
+Again, we see many empty strings. But we also see 01, 02, 03, ...
+However, we also see 89 and 93, although there are only 3 in total. Let's take a look at these by finding then in Year_First:
+```
+grep("[0-9]{1,2}-[A-Z][a-z]{2}-([89][0-9])", d$Year_First, value = TRUE)
+```
+Note we changed the pattern to look for 8 or 9 followed by a digit.
+This matched
+```
+[1] "9-Aug-89"  "9-Apr-93"  "21-Jan-93"
+```
+So there are only 3 and we can fix these later when post-processing
+2089 and 2093 or any value greater than 2017.  We can subtract 100.
+Alternatively, we could make our original query more specific to have
+the first digit of the two digit year be either 0 or 1 so that we only matched 2000 to 2020.
+Then we could do the 1900-1999 with a separate regular expression.
 
 
+## Next Pattern
+Let's turn our attention to the remaining strings in d$Year_First for which we have 
+not extracted a year in `d$startYear`.
+Again, let's look at the unique values in d$Year_First that we haven't yet converted 
+to non-NA values in d$startYear:
+```
+w = is.na(d$startYear) & d$Year_First != ""
+unique(d$Year_First[w])
+```
+```
+ [1] "2007-08"                    "Autumn 2003"               
+ [3] "Mosquitoes fed from animal" "1960, 1985"                
+ [5] "1971, 1983"                 "1983 original isolation"   
+ [7] "1967 original isolation"    "1971 original isolation"   
+ [9] "2007-2009"                  "10-Aug"                    
+[11] "1995-2004"                  "1960-1962"                 
+[13] "8-Aug"                      "7-Oct"                     
+[15] "6-Feb"                      "1997-1998"                 
+[17] "1986-1987"                  "8-Sep"                     
+[19] "9-Nov"                      "9-Oct"                     
+[21] "10-Sep"                     "3-May"                     
+[23] "8-Jul"                      "11-Feb"                    
+[25] "2011-12"                    "9-Mar"                     
+[27] "8-Jun"                      "15-Sep"                    
+[29] "12-Aug"                     "5/10/2015"                 
+[31] "8/4/2014"                   "7/13/2015"                 
+[33] "2005-08"                    "7/2/2012"                  
+[35] "6/9/2008"                   "7/7/2008"                  
+[37] "8/4/2008"                   "8/11/2008"                 
+[39] "8/18/2008"                  "7-Aug"                     
+[41] "9-Aug"                      "8305 E"                    
+[43] "E23312421"                  "1982-1983"                 
+[45] "1968 original isolation"   
+```
+There is no obvious year for values such as 8-Aug. So we'll leave those as NA.
+Let's convert the values such as "8/11/2008".
+This is very similar to the day-month-year except we have the month number, 
+the month comes first, the day second, 
+and we have a four digit year.
+Let's write a regular expression to match these:
+```
+rx = "([0-9]|1[0-2])/[0-9]{1,2}/((19|20)[0-9]{2})"
+```
+We can check what it matches with
+```
+grep(rx, unique(d$Year_First[w]), value = TRUE)
+```
+```
+[1] "5/10/2015" "8/4/2014"  "7/13/2015" "7/2/2012"  "6/9/2008" 
+[6] "7/7/2008"  "8/4/2008"  "8/11/2008" "8/18/2008"
+```
+This seems to be all the ones. So we can use this as 
+```
+w = is.na(d$startYear) & d$Year_First != ""
+tmp = gsub(rx, "\\2", d$Year_First[w])
+```
+
+
+# More Specific Regular Expressions
 
 ## Matching Legitimate Month Names
 What if we want to ensure Bob doesn't match as a month name?
