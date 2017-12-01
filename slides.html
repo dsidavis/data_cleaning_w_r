@@ -127,7 +127,7 @@ Aim to write software rather than scripts
 static. Breaks if the data change, assumes a linear workflow.
 
 ```
-df[12, 3] = "Bob"
+> df[12, 3] = "Bob"
 ```
 Why row 12? Why column 3? What if Dr. Smarty-pants inserts a new
 column in position 1?
@@ -136,7 +136,7 @@ column in position 1?
 can change without breaking script
 
 ```
-df$names[df$names == "bob"] = "Bob" 
+> df$names[df$names == "bob"] = "Bob" 
 ```
 Invariant to order of rows/columns. If the data are already corrected,
 has no effect.
@@ -318,14 +318,19 @@ of `[]`
 
 ## Alternation
 
-Matches either character (can use more than two) by using the `|`
-(called the pipe - key above "Enter" key on US keyboards), used inside `[]`
++ Matches either multiple single characters (can use more than two)
+inside `[]`
++ Matches multiple patterns by using the `|` (called the "pipe", shift + key above
+"Enter" key on US keyboards) outside of `[]` 
 
 ```
-> strings = c("cat", "bat", "hat", "cot")
+> strings = c("cat", "bat", "hat", "coat")
 
-> grep("[c|b]at", strings)
+> grep("[cb]at", strings)
 [1] 1 2
+
+> grep("hat|coat", strings)
+[1] 3 4
 ```
 
 ---
