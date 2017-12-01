@@ -1,3 +1,5 @@
+<link rel="stylesheet" type="text/css" media="all" href="callout.css" />
+
 # Cleaning and Transforming Text Data
 
 Let's consider a different data set.
@@ -535,3 +537,228 @@ grep("(0-9|1[0-9]|2[0-9]|3[0-1])-(Jan|Feb...)-[0-9]{2}", ts)
 ```
 
 We can also simplify the 2 middle alternatives to `[12][0-9]`.
+
+
+
+
+# Working the Names of the PDF Documents
+
+In the column PDF, we have 0, 1, or more names of associated PDF documents,
+e.g., <!-- d$PDF[c(1, 2, 16, 18, 19)] -->
+```
+[1] "internal-pdf://2699927534.pdf"                                                                                           
+[2] NA                                                                                                                        
+[3] "internal-pdf://1100312109.pdf;internal-pdf://2457284182.pdf;internal-pdf://0251931699.pdf"                               
+[4] "internal-pdf://2914572150.pdf;internal-pdf://2480984474.pdf;;internal-pdf://2573831033.pdf;internal-pdf://2764266581.pdf"
+[5] NA                                                                                                                        
+```
+
+When we process this column, we need to get the separate names of the PDF documents, without the
+internal-pdf:// prefix.
+
+We can do the first part – to separate the names – with  strsplit() and a simple regular expressions for how/where to split the strings:
+```
+pdfs = strsplit(d$PDF, ";")
+```
+Looking at the head of this, we see
+```
+[[1]]
+[1] "internal-pdf://2699927534.pdf"
+
+[[2]]
+[1] NA
+
+[[3]]
+[1] NA
+
+[[4]]
+[1] NA
+
+[[5]]
+[1] NA
+
+[[6]]
+[1] "internal-pdf://0659339597.pdf"
+```
+
+Note that the regular expression is the second parameter (named split) and not the first argument
+as in grep() and gsub().
+
+strsplit() returns a list with an element for each of the elements in the string  we passed
+strsplit().
+Each element in the resulting list can have 0 or more elements corresponding to the sub-elements
+that were separated by the split pattern.
+In our example, the split separator is the fixed character ;.
+strsplit() allows this to be any regular expression. This means it can be more than one character
+and can be a patter rather than a fixed string.
+
+
+Once we have the list of character vectors possibly containing the internal-pdf://...pdf elements, 
+we need to remove the "internal-pdf://". We can do this with gsub()
+```
+pdfs = lapply(pdfs, function(x) gsub("^internal-pdf://", "", x))
+```
+We can look at some representative elements:
+```
+pdfs[c(1, 2, 16, 18, 19)]
+```
+```
+[[1]]
+[1] "2699927534.pdf"
+
+[[2]]
+[1] NA
+
+[[3]]
+[1] "1100312109.pdf" "2457284182.pdf" "0251931699.pdf"
+
+[[4]]
+[1] "2914572150.pdf" "2480984474.pdf" ""              
+[4] "2573831033.pdf" "2764266581.pdf"
+
+[[5]]
+[1] NA
+```
+and we have what we want.
+
+In fact, we need to add a prefix to each of these to give them the full path to the
+file. So we would do this in the gsub() with
+```
+pdfs = lapply(pdfs, function(x) gsub("^internal-pdf://", "/path/to/the/PDFs/", x))
+```
+Or we can add this with paste()/paste0() in a separate call to lapply().
+
+
+
+
+# Fixing the Country Column
+
+Next, let's look at the Country column.
+Again, there are over 4000 entries. We can look at the unique values
+```
+unique(d$Country)
+```
+to see if there are patterns we need to deal with.
+We see one entry "????" and another "?". This should be mapped to "" or NA.
+What about "??South America"?
+
+We also see "Brazil¥Ë_¥Ë_¥Ë_¥Ë_¥Ë_¥Ë_¥Ë__"
+and we should remove this triple of characters "¥Ë_" as we did above.
+
+We also see "Central Africa [Republic?]"
+How do we deal with the "[Republic?]" part?
+
+And "Former USSR" and "Russia (Far East)"?
+
+What about "South Africa or Zimbabwe" ?
+
+We have "unknown" and "Unknown". We should map these both to NA.
+Similarly for "no location information given".
+
+The most common issue is that we have many entries of the form
+```
+country: state, city
+"USA: Conneticut, Mystic"                         
+"Mexico:Sonora"                                   
+```
+
+Let's create a new column in d named CountryName by copying Country
+```
+d$CountryName = d$Country
+```
+Next, let's discard all the text after a : in this column.
+This approach means we still have the full information for each observation in Country, 
+but CountryName will have just the country.
+```
+d$CountryName = gsub(":.*", "", d$CountryName)
+```
+We have now less than half of the unique values in d$Country and this makes it easier to look at the patterns.
+
+Let's get rid of the odd character sequence "¥Ë_"
+```
+d$CountryName = gsub("¥Ë_", "", d$CountryName)
+```
+
+Let's map the entries consisting only of ? characters to NA:
+```
+d$CountryName[grepl("^\\?+$", d$CountryName)] = NA
+```
+
+
+We now see there is an entry "Brazil_". Let's find this in the original Country column:
+```
+grep("Brazil_", d$Country, value = TRUE)
+```
+It isn't there. So we seem to have introduced this in our transformations. Let's
+find the entries with a _:
+```
+grep("_", d$Country, value = TRUE)
+ [1] "Trinidad¥Ë_¥Ë_¥Ë_¥Ë_¥Ë_¥Ë_¥Ë__" "Trinidad¥Ë_¥Ë_¥Ë_¥Ë_¥Ë_¥Ë_¥Ë__"
+ [3] "Trinidad¥Ë_¥Ë_¥Ë_¥Ë_¥Ë_¥Ë_¥Ë__" "Trinidad¥Ë_¥Ë_¥Ë_¥Ë_¥Ë_¥Ë_¥Ë__"
+ [5] "Trinidad¥Ë_¥Ë_¥Ë_¥Ë_¥Ë_¥Ë_¥Ë__" "Trinidad¥Ë_¥Ë_¥Ë_¥Ë_¥Ë_¥Ë_¥Ë__"
+ [7] "Trinidad¥Ë_¥Ë_¥Ë_¥Ë_¥Ë_¥Ë_¥Ë__" "Trinidad¥Ë_¥Ë_¥Ë_¥Ë_¥Ë_¥Ë_¥Ë__"
+ [9] "Brazil¥Ë_¥Ë_¥Ë_¥Ë_¥Ë_¥Ë_¥Ë__"   "Brazil¥Ë_¥Ë_¥Ë_¥Ë_¥Ë_¥Ë_¥Ë__"  
+```
+So there are two _ at the end of these strings. So this happened
+when we removed the "¥Ë_".
+We can clean these up with
+```
+d$CountryName = gsub("_$", "", d$CountryName)
+```
+Alternatively, we could have fixed the "¥Ë_" by allowing an extra but  optional _ at the end
+```
+d$CountryName = gsub("¥Ë__?", "", d$CountryName)
+```
+We have to check this doesn't have unwanted effects!
+
+
+We can use regular expressions to find Unknown, unknown, "no location information given".
+However, it is probably easier to use %in%:
+```
+w = d$CountryName %in% c("Unknown", "unknown", "no location information given")
+d$CountryName[w] = NA
+```
+We can also compute w by creating a lower-case version of d$CountryName and comparing to that
+so we don't have to repeat "unknown" and "Unknown".
+
+
+We see USA and United states, United States.
+Again, we can deal with lower case. But we might want to map USA to United States or vice versa.
+One approach is 
+```
+d$CountryName[ d$CountryName == "USA"] = "United States"
+d$CountryName[ d$CountryName == "United states"] = "United States"
+```
+
+However, a better approach is 
+```
+d$CountryName[ d$CountryName %in% c("USA", "United states")] = "United States"
+```
+
+We can do this for other synonms by collecting them into a list, e.g.,
+```
+syn = list("United States" = c("USA", "United states", "US"),
+           Ireland = "Eire")
+```
+and then we can loop over these name-vector pairs and substitute
+```
+for(i in names(syn))
+  d$CountryName[ d$CountryName %in% syn[[i]] ] = i
+```
+Or, we can turn our syn into two parallel vectors with the name repeated as many times as
+there elements in the synonym vector (e.g. 3 for "United States")
+Then we can use match()
+
+```
+target = rep(names(syn), sapply(syn, len))
+m = match(d$CountryName, unlist(syn), 0)
+d$CountryName[m] = target[m]
+```
+
+
+
+
+<div class="inset">
+For what we cannot fix and even those for which we are 90% certain, we need to verify what we have
+changed with the owners/creators of data.
+</div>
