@@ -97,11 +97,16 @@ Is this how we use data?
 
 # Data Life cycle (cont.)
 
-+ In most cases, this is a cycle, not linear. E.g., you use the data, find
-issues, fix them, get more data, etc. 
++ In most cases, this is a cycle, not linear. E.g., 
+
   + Data created
   + Cleaned/processed 
   + "Used" in some way
+  + Find issues! Go back to cleaning...
+  + Add more data
+  + Clean so more
+  + Share with others
+  + They find issues! Go back to cleaning... 
 
 + What if the original data is changed after it is cleaned?
 
@@ -397,11 +402,14 @@ Most regex functions have an option to `ignore.case`
 ## Word boundaries
 
 Useful when looking for a word that occurs as a pattern inside other
-words. Specified with `\\b` (either end of word), `\\<` (beginning of
-word), or `\\>` (end of word)
+words. Specified with:
+
++  either beginning or end of word: `\\b`
++  beginning of word: `\\<`
++  end of word: `\\>`
 
 ```
-> strings = c("This", "is", "Mississippi.")
+> strings = c("This", "is", "Mississippi")
 > grep("is", strings)
 [1] 1 2 3 
 
@@ -458,6 +466,8 @@ word), or `\\>` (end of word)
 Allows you to refer to part of a match by enclosing it in `()`. `\\1`
 refers to the first match captured, `\\2` the second, and so on...
 
+Really useful in `gsub()` to "grab" pieces out of a string:
+
 ```
 > strings = c("I want this 5 and this 9 separated by a '-'.")
 
@@ -470,20 +480,25 @@ refers to the first match captured, `\\2` the second, and so on...
 
 ---
 ### Non-greedy Matching
-    + Problems with greedy matching.
-	+ Common simple case, simple solution
-	   + Anything except this character
-	   + or any of these characters
-    + *?
++ Problems with greedy matching.
+
++ Common simple case, simple solution
+
++ Anything except this character
+  + or any of these characters
+  + `*?`
+  
 ---
 ### Positive Lookahead and Behind
-    + (?=  )   (?<= )
++ `(?=  )`   `(?<= )`
+
 ---	
 ### Negative Lookahead and Behind
-    + (?!  )   (?<! )	
++ `(?!  )`   `(?<! )`	
 
 
 ---
+
     </textarea>
     <script src="https://remarkjs.com/downloads/remark-latest.min.js">
     </script>
