@@ -76,7 +76,17 @@ from it.
 
 ---
 
-See [Barley.md](Barley.md)
+# Case studies:
+
+
+See:
+[sfHousing.md](sfHousing.md)
++
+[nasa.md](nasa.md)
+[CleanYears.md](CleanYears.md)
+
+[Barley.md](Barley.md)
+[mannheim.md](mannheim.md)
 
 ---
 
@@ -125,7 +135,7 @@ Aim to write software rather than scripts
 static. Breaks if the data change, assumes a linear workflow.
 
 ```
-> df[12, 3] = "Bob"
+df[12, 3] = "Bob"
 ```
 Why row 12? Why column 3? What if Dr. Smarty-pants inserts a new
 column in position 1?
@@ -134,7 +144,7 @@ column in position 1?
 can change without breaking script
 
 ```
-> df$names[df$names == "bob"] = "Bob" 
+df$names[df$names == "bob"] = "Bob" 
 ```
 Invariant to order of rows/columns. If the data are already corrected,
 has no effect.
@@ -204,9 +214,9 @@ But writing software is more effort (higher cost), requires more thought.
 Matches to the literal characters.
 
 ```
-> strings = c("My dog is cool.", "My cat is cooler.")
+strings = c("My dog is cool.", "My cat is cooler.")
 
-> grep("dog", strings)
+grep("dog", strings)
 [1] 1
 
 ```
@@ -214,12 +224,12 @@ Matches to the literal characters.
 Special characters `.()[]\^$` have to be escaped with double `\`
 
 ```
-> strings = c("This is a period: '.' ", "There is no period here")
+strings = c("This is a period: '.' ", "There is no period here")
 
-> grep(".", strings)
+grep(".", strings)
 [1] 1 2
 
-> grep("\\.", strings)
+grep("\\.", strings)
 [1] 1
 
 ```
@@ -231,9 +241,9 @@ Special characters `.()[]\^$` have to be escaped with double `\`
 Matches **any** character.
 
 ```
-> strings = c("cat", "hat", "bat", "4at", "Manhattan")
+strings = c("cat", "hat", "bat", "4at", "Manhattan")
 
-> grep(".at", strings)
+grep(".at", strings)
 [1] 1 2 3 4 5
 
 ```
@@ -256,9 +266,9 @@ grep("www\\.", strings)
 Matches any character in a set of specified characters inside of `[]`.
 
 ```
-> strings = c("cat", "hat", "bat", "4at", "Manhattan")
+strings = c("cat", "hat", "bat", "4at", "Manhattan")
 
-> grep("[bc]at", strings)
+grep("[bc]at", strings)
 [1] 1 3
 
 ```
@@ -282,27 +292,27 @@ Shorthand for classes of characters, include:
 + Any alphabetic
 
 ```
-> strings = c("Abc", "abc", "123", "Abc123")
+strings = c("Abc", "abc", "123", "Abc123")
 
-> grep("[A-z]", strings) 
+grep("[A-z]", strings) 
 [1] 1 2 4
 ```
 + Any lower-case alphabetic
 
 ```
-> grep("[a-z]", strings) 
+grep("[a-z]", strings) 
 [1] 1 2 4
 ```
 + Any digit
 
 ```
-> grep("[0-9]", strings) 
+grep("[0-9]", strings) 
 [1] 3 4
 ```
 + Any alphanumeric
 
 ```
-> grep("[A-z0-9]", strings)
+grep("[A-z0-9]", strings)
 [1] 1 2 3 4
 ```
 ---
@@ -315,12 +325,12 @@ strings = c("a", "z", "1", "9")
 ```
 + Only match letters "a" through "g"
 ```
-> grep("[a-g]", strings)
+grep("[a-g]", strings)
 [1] 1 
 ```
 + only match numbers 0 through 5
 ```
-> grep("[0-5]", strings)
+grep("[0-5]", strings)
 [1] 4
 ```
 ---
@@ -329,24 +339,24 @@ strings = c("a", "z", "1", "9")
 Uses `^` inside of `[]` to negate the match, i.e., match everything
 except those characters.
 ```
-> strings = c("Abc", "abc", "123", "Abc123")
+strings = c("Abc", "abc", "123", "Abc123")
 
 ```
 + Contains non-alphabetic
 ```
-> grep("[^A-z]", strings)
+grep("[^A-z]", strings)
 [1] 3 4
 ```
 
 + Contains non-lower case
 ```
-> grep("[^a-z]", strings)
+grep("[^a-z]", strings)
 [1] 1 3 4
 ```
 
 + Contains any non-digit
 ```
-> grep("[^0-9]", strings)
+grep("[^0-9]", strings)
 [1] 3 4
 ```
 
@@ -357,12 +367,12 @@ Matches the beginning (`^`) or end (`$`) of the string. Used outside
 of `[]`
 
 ```
-> strings = c("cat", "bat", "check", "China")
+strings = c("cat", "bat", "check", "China")
 
-> grep("^c", strings) #First character is "c"
+grep("^c", strings) #First character is "c"
 [1] 1 3
 
-> grep("t$", strings) # Last character is "t"
+grep("t$", strings) # Last character is "t"
 [1] 1 2
 
 ```
@@ -375,8 +385,8 @@ Matches multiple patterns by using the `|` (called the "pipe", shift + key above
 "Enter" key on US keyboards) 
 
 ```
-> strings = c("cat", "bat", "check", "China")
-> grep("hat|coat", strings)
+strings = c("cat", "bat", "check", "China")
+grep("hat|coat", strings)
 [1] 3 4
 ```
 
@@ -386,9 +396,9 @@ Matches multiple patterns by using the `|` (called the "pipe", shift + key above
 Most regex functions have an option to `ignore.case`
 
 ```
-> strings = c("Cat", "cat", "CAT", "bat", "Hat")
+strings = c("Cat", "cat", "CAT", "bat", "Hat")
 
-> grep("cat", strings, ignore.case = TRUE)
+grep("cat", strings, ignore.case = TRUE)
 [1] 1 2 3
 ```
 ---
@@ -402,14 +412,14 @@ words. Specified with:
 +  end of word: `\\>`
 
 ```
-> strings = c("This", "is", "Mississippi")
-> grep("is", strings)
+strings = c("This", "is", "Mississippi")
+grep("is", strings)
 [1] 1 2 3 
 
-> grep("is\\>", strings)
+grep("is\\>", strings)
 [1] 1 2 
 
-> grep("\\bis\\b", strings)
+grep("\\bis\\b", strings)
 [1] 2 
 ```
 
@@ -418,18 +428,18 @@ words. Specified with:
 
 + Optional pattern: `?` character can occur 0 or 1 times
 ```
-> strings = c("abc", "ac", "abbc")
-> grep("ab?c", strings)
+strings = c("abc", "ac", "abbc")
+grep("ab?c", strings)
 [1] 1 2
 ```
 + Zero or more  *
 ```
-> grep("ab*c", strings)
+grep("ab*c", strings)
 [1] 1 2 3
 ```
 + One or more  \+
 ```
-> grep("ab+c", strings)
+grep("ab+c", strings)
 [1] 1 3
 ```
 ---
@@ -437,17 +447,17 @@ words. Specified with:
 
 + m or more   `{m,}`
 ```
-> grep("ab{2,}c", strings)
+grep("ab{2,}c", strings)
 [1] 3
 ```
 + n or fewer   `{,n}`
 ```
-> grep("ab{2,}c", strings)
+grep("ab{2,}c", strings)
 [1] 1 2 3
 ```
 + between m and n  `{m,n}`
 ```
-> grep("ab{1,2}c", strings)
+grep("ab{1,2}c", strings)
 [1] 1 3
 ```
 
@@ -462,9 +472,9 @@ refers to the first match captured, `\\2` the second, and so on...
 Really useful in `gsub()` to "grab" pieces out of a string:
 
 ```
-> strings = c("I want this 5 and this 9 separated by a '-'.")
+strings = c("I want this 5 and this 9 separated by a '-'.")
 
-> gsub(".*([0-9]).*([0-9]).*", "\\1 - \\2", strings)
+gsub(".*([0-9]).*([0-9]).*", "\\1 - \\2", strings)
 [1] "5 - 9"
 ```
 ---
