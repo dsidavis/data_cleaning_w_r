@@ -11,11 +11,14 @@
 1. check that zips are all in Bay area
 1. zipcodestogo.com/California
   - Have 4 zip codes not in CA, e.g. 95434
+  
 1. table of each column - summary hides factors
 1. sort(table(h$city)) 
   - have "XXX county", " ", "`XXX", 
+
 1. Walnut Grove - is it part of the Bay area, check that Davis is not
    included
+
 1. Street - how many have not letters, anticipate the worst. Think
    about what could have happened to corrupt the data. 
   - We know some are weird - saw there are 4 NAs. 
@@ -53,6 +56,10 @@ We could use the Zillow API to fix these up.
    multi-story building), are they in dense cities? or in the
    country-side? 
 1. Lat / Long - make map, make sure R's data is correct
+
+
+
+--------------------------------------------
 
 ## Zoonotics data
 

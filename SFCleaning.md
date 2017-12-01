@@ -472,7 +472,320 @@ We can look up the street name and city combinations and find the ZIP code.
 For example, searching "Stocking Lane, Vacaville ZIP code", we get 95688
 
 
-We can use the Web form at https://tools.usps.com/go/ZipLookupAction!input.action?mode=1&refresh=true.
+We can use the Web form at
+https://tools.usps.com/go/ZipLookupAction!input.action?mode=1&refresh=true.
+And the file [zipCodeForm.R](zipCodeForm.R) contains code to create an R function
+to programmatically query this form.
 
+
+## County Names
+We check the names of the counties:
+```
+unique(d$county)
+```
+```
+ [1] Alameda County       Contra Costa County  Marin County         Napa County         
+ [5] San Francisco County San Mateo County     Santa Clara County   Solano County       
+ [9] Sonoma County        2003-09-07           2005-06-26          
+11 Levels: 2003-09-07 2005-06-26 Alameda County Contra Costa County Marin County ... Sonoma County
+```
+We see the odd ones we identified earlier that are dates.
+Having dropped those rows, we can use droplevels() to omit these from the factor.
+
+Otherwise, the county names look correct. (Again, looks can be deceiving so try to verify
+values programmatically.)
+
+## City Names
+
+We can look at the unique names of the cities to see if there are any odd ones.
+However, since there are many, let's also compute how many there are of each and sort
+them from most common to least common. This makes it easier to see unusual ones
+and also see how close they are to common ones:
+```
+tt = sort(table(d$city), decreasing = TRUE)
+tt
+```
+```
+              San Francisco                     Oakland                  Santa Rosa 
+                      22213                       17195                       11229 
+                    Fremont                   Evergreen                     Antioch 
+                      10782                        8930                        8636 
+                    Vallejo                     Hayward                   Fairfield 
+                       8632                        7986                        7985 
+                    Concord                   Brentwood                    Richmond 
+                       7717                        6881                        6560 
+                  San Ramon                   Vacaville                   Livermore 
+                       6214                        6079                        5989 
+              West San Jose                Walnut Creek                 Santa Clara 
+                       5524                        5347                        5197 
+                  Berryessa                        Napa                   Sunnyvale 
+                       4943                        4729                        4598 
+                  San Mateo                 San Leandro                   Pittsburg 
+                       4399                        4342                        4300 
+                 Pleasanton                    Cambrian                      Novato 
+                       4191                        4142                        3719 
+                   Danville                      Dublin                Blossom Hill 
+                       3620                        3614                        3568 
+               Redwood City                   Daly City                  Union City 
+                       3494                        3381                        3323 
+                   Petaluma                      Gilroy                    Milpitas 
+                       3239                        3113                        2913 
+                     Oakley                 Willow Glen               Mountain View 
+                       2907                        2881                        2869 
+                   Berkeley Greater Downtown-metro Area                 Morgan Hill 
+                       2823                        2810                        2810 
+             Blossom Valley                     Alameda               East San Jose 
+                       2780                        2727                        2642 
+                   Martinez                  San Rafael               Castro Valley 
+                       2628                        2624                        2589 
+                   Hercules              South San Jose                   Cupertino 
+                       2587                        2511                        2281 
+        South San Francisco                   San Pablo                 Suisun City 
+                       2236                        2215                        2200 
+              Discovery Bay                      Newark                Rohnert Park 
+                       2190                        2145                        2108 
+                  Los Gatos                    Campbell               Pleasant Hill 
+                       2087                        2073                        2017 
+             North San Jose                   San Bruno                      Sonoma 
+                       1973                        1892                        1860 
+                    Benicia                     Almaden                     Windsor 
+                       1813                        1766                        1667 
+            American Canyon                 Mill Valley                    San Jose 
+                       1643                        1595                        1592 
+                 San Carlos                 Foster City                   Palo Alto 
+                       1572                        1516                        1494 
+                   Pacifica                       Dixon                   Bay Point 
+                       1448                        1420                        1405 
+                  Los Altos                    Saratoga                 San Lorenzo 
+                       1396                        1376                        1364 
+                  Rio Vista                  Menlo Park                     Belmont 
+                       1302                        1183                        1133 
+                 Burlingame                   Lafayette                  El Cerrito 
+                       1112                        1097                        1070 
+                 Sebastopol                Santa Teresa                  Emeryville 
+                       1016                         968                         966 
+                     Orinda                      Pinole                      Moraga 
+                        915                         910                         884 
+                El Sobrante                     Clayton                       Alamo 
+                        860                         849                         822 
+                 Cloverdale              East Palo Alto               Half Moon Bay 
+                        811                         801                         801 
+                 Healdsburg                    Millbrae                 San Anselmo 
+                        701                         700                         694 
+                     Albany                      Cotati                 Guerneville 
+                        682                         664                         567 
+                  Kentfield                   Sausalito                    Piedmont 
+                        493                         493                         472 
+          Belvedere/tiburon                Hillsborough                Corte Madera 
+                        471                         462                         436 
+                      Rodeo                   St Helena                     Fairfax 
+                        429                         375                         352 
+                   Larkspur                    Brisbane                 Forestville 
+                        308                         296                         288 
+                 Bodega Bay                  Kensington                   Calistoga 
+                        256                         249                         246 
+            Los Altos Hills                  San Martin                    Crockett 
+                        222                         212                         173 
+              Emerald Hills                     Pacheco                    Woodside 
+                        172                         169                         148 
+                 Yountville                  El Granada                   Penngrove 
+                        142                         140                         135 
+                Rose Garden                Monte Sereno                   Monte Rio 
+                        130                         129                         115 
+                    Montara                    Cazadero                    Atherton 
+                        113                         112                         110 
+                 Moss Beach                  Glen Ellen                      Angwin 
+                        109                         107                          86 
+                    Kenwood                    La Honda                     Tiburon 
+                         79                          76                          71 
+                  Inverness                   Sea Ranch              Portola Valley 
+                         68                          66                          63 
+                  Greenbrae                 Geyserville               Bethel Island 
+                         59                          58                          57 
+          Belvedere/Tiburon                  Occidental                 Pope Valley 
+                         49                          48                          45 
+                      Sunol                      Graton               Stinson Beach 
+                         39                          38                          35 
+                    Bolinas                        Ross                      Jenner 
+                         33                          32                          30 
+                   Woodacre                      Diablo                     Winters 
+                         29                          27                          26 
+               Dillon Beach               Forest Knolls                     Nicasio 
+                         24                          24                          23 
+                     Fulton                   Belvedere                   Lagunitas 
+                         19                          17                          14 
+                 Muir Beach                       Colma         Point Reyes Station 
+                         13                          12                          11 
+               San Geronimo              Unincorporated                 Point Reyes 
+                         11                           8                           7 
+                Camp Meeker                    Loma Mar                   Deer Park 
+                          6                           6                           5 
+                  Knightsen              Alameda County                   Annapolis 
+                          5                           4                           4 
+                 Port Costa                      Alviso               The Sea Ranch 
+                          4                           3                           3 
+                                      Boyes Hot Springs              Discoverey Bay 
+                          2                           2                           2 
+                  El Verano                      Elmira                    Stanford 
+                          2                           2                           2 
+                    Tomales                Walnut Grove                 `san Rafael 
+                          2                           2                           1 
+                   `vallejo                      Bodega                     Briones 
+                          1                           1                           1 
+                   Marshall                   Pescadero                    Rio Nido 
+                          1                           1                           1 
+                San Quentin         San Quentin Village                    Stockton 
+                          1                           1                           1 
+                      Tracy                 Watsonville 
+                          1                           1 
+```
+
+
+Can you spot some problems?
+More pairs of eyes is better than one - crowdsourcing this with colleagues helps if you are going to
+do this visually.
+
+A good thing to check for is NA and "", the empty string.
+```
+table(is.na(d$city) | d$city == "")
+```
+```
+ FALSE   TRUE 
+348191      2 
+```
+So there are two and these are "".  There are no NA values for the city.
+
+We can find these records:
+```
+d[d$city == "",]
+```
+These are the records with NA values for all of the variables except county.
+We should have discarded (or fixed) these rows when we found them.
+We are refinding problems in different variables that we found earlier.
+
+Again, like the ZIP codes, we can get a list of all city names in California or the Bay Area
+and compare these. This will be harder than ZIP codes. ZIP codes are very structured. Names
+of cities can be spelled differently, organized in different ways (Suisun and Suisun City,
+Belvedere/Tiburon and Belvedere/tiburon and with a - rather than /).
+
+
+It can be helpful to also sort the unique names alphabetically:
+```
+sort(names(tt))
+```
+```
+  [1] ""                            "`san Rafael"                 "`vallejo"                   
+  [4] "Alameda"                     "Alameda County"              "Alamo"                      
+  [7] "Albany"                      "Almaden"                     "Alviso"                     
+ [10] "American Canyon"             "Angwin"                      "Annapolis"                  
+ [13] "Antioch"                     "Atherton"                    "Bay Point"                  
+ [16] "Belmont"                     "Belvedere"                   "Belvedere/tiburon"          
+ [19] "Belvedere/Tiburon"           "Benicia"                     "Berkeley"                   
+ [22] "Berryessa"                   "Bethel Island"               "Blossom Hill"               
+ [25] "Blossom Valley"              "Bodega"                      "Bodega Bay"                 
+ [28] "Bolinas"                     "Boyes Hot Springs"           "Brentwood"                  
+ [31] "Briones"                     "Brisbane"                    "Burlingame"                 
+ [34] "Calistoga"                   "Cambrian"                    "Camp Meeker"                
+ [37] "Campbell"                    "Castro Valley"               "Cazadero"                   
+ [40] "Clayton"                     "Cloverdale"                  "Colma"                      
+ [43] "Concord"                     "Corte Madera"                "Cotati"                     
+ [46] "Crockett"                    "Cupertino"                   "Daly City"                  
+ [49] "Danville"                    "Deer Park"                   "Diablo"                     
+ [52] "Dillon Beach"                "Discoverey Bay"              "Discovery Bay"              
+ [55] "Dixon"                       "Dublin"                      "East Palo Alto"             
+ [58] "East San Jose"               "El Cerrito"                  "El Granada"                 
+ [61] "El Sobrante"                 "El Verano"                   "Elmira"                     
+ [64] "Emerald Hills"               "Emeryville"                  "Evergreen"                  
+ [67] "Fairfax"                     "Fairfield"                   "Forest Knolls"              
+ [70] "Forestville"                 "Foster City"                 "Fremont"                    
+ [73] "Fulton"                      "Geyserville"                 "Gilroy"                     
+ [76] "Glen Ellen"                  "Graton"                      "Greater Downtown-metro Area"
+ [79] "Greenbrae"                   "Guerneville"                 "Half Moon Bay"              
+ [82] "Hayward"                     "Healdsburg"                  "Hercules"                   
+ [85] "Hillsborough"                "Inverness"                   "Jenner"                     
+ [88] "Kensington"                  "Kentfield"                   "Kenwood"                    
+ [91] "Knightsen"                   "La Honda"                    "Lafayette"                  
+ [94] "Lagunitas"                   "Larkspur"                    "Livermore"                  
+ [97] "Loma Mar"                    "Los Altos"                   "Los Altos Hills"            
+[100] "Los Gatos"                   "Marshall"                    "Martinez"                   
+[103] "Menlo Park"                  "Mill Valley"                 "Millbrae"                   
+[106] "Milpitas"                    "Montara"                     "Monte Rio"                  
+[109] "Monte Sereno"                "Moraga"                      "Morgan Hill"                
+[112] "Moss Beach"                  "Mountain View"               "Muir Beach"                 
+[115] "Napa"                        "Newark"                      "Nicasio"                    
+[118] "North San Jose"              "Novato"                      "Oakland"                    
+[121] "Oakley"                      "Occidental"                  "Orinda"                     
+[124] "Pacheco"                     "Pacifica"                    "Palo Alto"                  
+[127] "Penngrove"                   "Pescadero"                   "Petaluma"                   
+[130] "Piedmont"                    "Pinole"                      "Pittsburg"                  
+[133] "Pleasant Hill"               "Pleasanton"                  "Point Reyes"                
+[136] "Point Reyes Station"         "Pope Valley"                 "Port Costa"                 
+[139] "Portola Valley"              "Redwood City"                "Richmond"                   
+[142] "Rio Nido"                    "Rio Vista"                   "Rodeo"                      
+[145] "Rohnert Park"                "Rose Garden"                 "Ross"                       
+[148] "San Anselmo"                 "San Bruno"                   "San Carlos"                 
+[151] "San Francisco"               "San Geronimo"                "San Jose"                   
+[154] "San Leandro"                 "San Lorenzo"                 "San Martin"                 
+[157] "San Mateo"                   "San Pablo"                   "San Quentin"                
+[160] "San Quentin Village"         "San Rafael"                  "San Ramon"                  
+[163] "Santa Clara"                 "Santa Rosa"                  "Santa Teresa"               
+[166] "Saratoga"                    "Sausalito"                   "Sea Ranch"                  
+[169] "Sebastopol"                  "Sonoma"                      "South San Francisco"        
+[172] "South San Jose"              "St Helena"                   "Stanford"                   
+[175] "Stinson Beach"               "Stockton"                    "Suisun City"                
+[178] "Sunnyvale"                   "Sunol"                       "The Sea Ranch"              
+[181] "Tiburon"                     "Tomales"                     "Tracy"                      
+[184] "Unincorporated"              "Union City"                  "Vacaville"                  
+[187] "Vallejo"                     "Walnut Creek"                "Walnut Grove"               
+[190] "Watsonville"                 "West San Jose"               "Willow Glen"                
+[193] "Windsor"                     "Winters"                     "Woodacre"                   
+[196] "Woodside"                    "Yountville"                 
+```
+Note the elements 2 and 3 - `san Rafael and `vallejo.
+Firstly, they have a ` as a prefix.
+Secondly, parts are lower case and would match another name in the vector!
+
+Let's get rid of the ` in these.
+We can use substring(), e.g.,
+```
+substring(c("`san Rafael", "`vallejo"), 2)
+```
+But we have to find these first in the d$city:
+```
+w = d$city %in% c("`san Rafael", "`vallejo")
+d$city[w] = substring(d$city[w], 2)
+```
+However, we can use a  regular expression to clean these and this is much more general:
+```
+d$city = gsub("^`", "", d$city)
+```
+
+
+Did you find any other anomalies? 
+What about Alameda County - element number 5.
+That is a county name, not a city name. Let's see if there are others.
+```
+grep("County", d$city)
+```
+Let's look at these observations. Perhaps there is something else wrong with them, e.g. the county
+was moved to the city and there was no county, or other columns/fields were permuted also.
+```
+d[grep("County", d$city),]
+```
+These are all Alameda County. The city is called Alameda. So we should change this:
+```
+d$city[d$city == "Alameda County"] = "Alameda"
+```
+
+
+
+We see Walnut Grove. I'm familiar with Walnut Creek and suspect that "Walnut Grove" should be Creek.
+Let's look up Walnut Grove and also look at the obsevation(s).
+```
+d[d$city == "Walnut Grove",]
+```
+Sure enough Walnut Grove is a legitimate city name in Sacramento County.
+Hang on, the observations say Solano County!
+Which should it be.
 
 

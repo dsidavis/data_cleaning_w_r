@@ -72,19 +72,42 @@ layout: true
 + Cleaning requires thought about how the data collection could lead to errors.
    + Often general problems, but always possible context-specific issues.
 
++ Use auxiliary data to check data
+
 + Cleaning should exist as part of the data life cycle, not separate
 from it.
 
+
+---
+# How Can Data Go Wrong
++ how were the data initially recorded (electronically or on paper)?
++ were the values entered by a machine or by a human?
++ how many different humans entered the data?
++ what conventions and protocols did they use?
++ could they have spelled things differently? used different terms for the same thing?
+  abbreviations?
++ did auto-complete propogate new erroneous entries (e.g. in Excel you enter a value
+ that is wrong and correct it but Excel remembers the initial value as a possible entry when prompting)
++ did they use the same date format?
++ what are possible typos?
++ could they have entered a value in the wrong column?
++ might they have sorted the rows having frozen other invisible columns?
+
+
+
 ---
 
-# Cleaning:
+# Examples/Case studies:
 
-See:
-[San Francisco Housing data](SFCleaning.html)
++ Cleaning
+   + [SFCleaning.md](SFCleaning.md)
+   + [CleanYears.md](CleanYears.md)
+   + [Barley.md](Barley.md)
++ Reading Data
+   + [nasa.md](nasa.md)
+   + [mannheim.md](mannheim.md)
 
-[Cleaning Years](CleanYears.html)
 
-[Barley.md](Barley.md)
 
 ---
 
@@ -571,6 +594,17 @@ Special characters include
 
 + Non-capture of groups
 + Named groups
+
+---
+
+
+# Annotating Changes from Cleaning
+
++ How should we record changes we make when cleaning?
++ Why?
+   + For data analysis (degrees of freedom if data imputed)
+   + For others to verify and possibly point out errors in "cleaning"
++ Ideally, able to programmatically manipulate the notes to 
 
 ---
 
