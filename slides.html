@@ -318,17 +318,10 @@ of `[]`
 
 ## Alternation
 
-+ Matches either multiple single characters (can use more than two)
-inside `[]`
 + Matches multiple patterns by using the `|` (called the "pipe", shift + key above
-"Enter" key on US keyboards) outside of `[]` 
+"Enter" key on US keyboards) 
 
 ```
-> strings = c("cat", "bat", "hat", "coat")
-
-> grep("[cb]at", strings)
-[1] 1 2
-
 > grep("hat|coat", strings)
 [1] 3 4
 ```
