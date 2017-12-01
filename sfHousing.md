@@ -91,7 +91,8 @@ Clean the "¥Ë_" out -
 		  + Get first year
 		  + If corresponding last year is NA, then use the end of range.
 		  + Final pattern is "find 4 digit number of form 19.. or 20.. and remove all other text" -
-            not guaranteed to work . Context specific.
+            not guaranteed to work . Context specific
+   + Country followed by :			
 			
  For what we cannot fix and even those for which we are 90% certain, we need to verify with
  owners/creators of data.
