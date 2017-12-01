@@ -388,7 +388,8 @@ Using table() on these would be better so we can see the repeats more readily.
 ```
 sort(table(as.character(h$zip[w])))
 ```
-```94300 94307 94380 94461 94909 95434 94400 
+```
+94300 94307 94380 94461 94909 95434 94400 
     1     1     1     1     1     4    12 
 ```
 Unfortuantely, this omits the NAs.
