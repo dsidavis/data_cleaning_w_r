@@ -174,8 +174,7 @@ But writing software is more effort (higher cost), requires more thought.
 
 + Negated Character Classes
 
-+ Positional Matching - Anchors  `^` `$`
-
++ Positional Matching - Anchors  (`^` and `$`)
 
 + Alternation
 
@@ -204,23 +203,156 @@ But writing software is more effort (higher cost), requires more thought.
 ---
 ## Literals
 
+Matches to the literal characters.
+
+```
+strings = c("My dog is cool.", "My cat is cooler.")
+
+grep("dog", strings)
+[1] 1
+
+```
+
+Special characters `.()[]\^$` have to be escaped with double `\`
+
+```
+strings = c("This is a period: '.' ", "There is no period here")
+
+grep(".", strings)
+[1] 1 2
+
+grep("\\.", strings)
+[1] 1
+
+```
+
 ---
 					
 ## Wildcard Character  `.`
 
+Matches **any** character.
+
+```
+strings = c("cat", "hat", "bat", "4at", "Manhattan")
+
+grep(".at", strings)
+[1] 1 2 3 4 5
+
+```
+Can be extremely useful, or create havok. Use caution.
+
 ---
 ## Character Classes
+
+Matches any character in a set of specified characters inside of `[]`.
+
+```
+strings = c("cat", "hat", "bat", "4at", "Manhattan")
+
+grep("[bc]at", strings)
+[1] 1 3
+
+```
+
+Shorthand for classes of characters, include:
+
++ numbers: `[0-9]` or `[[:digit:]]`
++ letters: `[A-z]` (all), `[A-Z]` (uppercase), `[a-z]` (lowercase),
+`[[:alpha:]]`
++ Alphanumberic: `[[:alnum:]]`
++ space characters: `\t`, `\n`, `[[:space:]]`
+
+```
+strings = c("Abc", "abc", "123", "Abc123")
+grep("[A-z]", strings)
+[1] 1 2 4
+
+grep("[a-z]", strings)
+[1] 1 2 4
+
+grep("[0-9]", strings)
+[1] 3 4
+
+grep("[A-z0-9]", strings)
+[1] 1 2 3 4
+```
+
 ---
 ## Negated Character Classes
+
+Uses `^` inside of `[]` to negate the match, i.e., match everything
+except those characters.
+
+```
+strings = c("Abc", "abc", "123", "Abc123")
+grep("[^A-z]", strings)
+[1] 3 4
+
+grep("[^a-z]", strings)
+[1] 1 3 4
+
+grep("[^0-9]", strings)
+[1] 3 4
+```
+
 ---
 ## Positional Matching - Anchors  `^` `$`
+
+Matches the beginning (`^`) or end (`$`) of the string. Used outside
+of `[]`
+
+```
+strings = c("cat", "bat", "check", "China")
+grep("^c", strings)
+[1] 1 3
+
+grep("t$", strings)
+[1] 1 2
+
+```
+
 ---
 
 ## Alternation
+
+Matches either character (can use more than two) by using the `|`
+(called the pipe - key above "Enter" key on US keyboards), used inside `[]`
+
+```
+strings = c("cat", "bat", "hat", "cot")
+grep("[c|b]at", strings)
+[1] 1 2
+```
+
 ---
 ## Case Insensitive matching
+
+Most regex functions have an option to `ignore.case`
+
+```
+strings = c("Cat", "cat", "bat", "Hat")
+grep("cat", strings, ignore.case = TRUE)
+[1] 1 2
+```
 ---
 ## Word boundaries
+
+Useful when looking for a word that occurs as a pattern inside other
+words. Specified with `\\b` (either end of word), `\\<` (beginning of
+word), or `\\>` (end of word)
+
+```
+strings = c("This", " is ", "Mississippi.")
+grep("is", strings)
+[1] 1 2 3
+
+grep("is\\>", strings)
+[1] 1 2
+
+grep("\\bis\\b", strings)
+[1] 2
+```
+
 ---
 ## Quantifiers
    + Optional pattern ?
