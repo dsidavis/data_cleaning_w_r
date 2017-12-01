@@ -746,7 +746,7 @@ Note the elements 2 and 3 - `san Rafael and `vallejo.
 Firstly, they have a ` as a prefix.
 Secondly, parts are lower case and would match another name in the vector!
 
-Let's get rid of the ` in these.
+Let's get rid of the \` in these.
 We can use substring(), e.g.,
 ```
 substring(c("`san Rafael", "`vallejo"), 2)
