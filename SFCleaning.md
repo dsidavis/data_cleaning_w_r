@@ -23,7 +23,6 @@ the entire provenance of the data and what could have gone wrong at each of the 
 + might they have sorted the rows having frozen other invisible columns?
 
 
-
 When cleaning data, we spend a lot of time looking at individual observations.
 We borrow information from many other observations to know what is typical.
 This helps us to identify atypical observations and values, and also to fix them.
@@ -780,7 +779,7 @@ d$city[d$city == "Alameda County"] = "Alameda"
 
 
 We see Walnut Grove. I'm familiar with Walnut Creek and suspect that "Walnut Grove" should be Creek.
-Let's look up Walnut Grove and also look at the obsevation(s).
+Let's look up Walnut Grove and also look at the observation(s).
 ```
 d[d$city == "Walnut Grove",]
 ```
@@ -789,3 +788,70 @@ Hang on, the observations say Solano County!
 Which should it be.
 
 
+
+
+## Street
+
+Earlier, we saw one value of street that had only numbers and no street name.
+Are there others.
+We can look for values of d$street which 
++ contain no alphabetic characters
++ only contain spaces and numbers
+
+We can do this with regular expressions.
+```
+grep("[a-zA-Z]", d$street, invert = TRUE, value = TRUE)
+```
+```
+[1] ""      "246"   ""      ""      ""      "95037" ""     
+```
+
+The 95037 looks like a ZIP code. Let's look at that observation:
+```
+d[d$street == "95037",]
+```
+```
+                   county      city zip street price     br lsqft bsqft year date      long
+251205 Santa Clara County Cupertino  NA  95037    NA 790000    NA    NA   NA <NA> -122.0419
+            lat
+251205 37.31749
+```
+
+This looks as if the street column should be zip and br should be price.
+
+
+## Date Sold
+
+Are the dates the houses were reported sold sane?
+```
+z = as.Date(as.character(d$date))
+```
+
+```
+range(z, na.rm = TRUE)
+```
+```
+[1] "2003-04-27" "2006-06-04"
+```
+
+## Year House Built
+
+```
+class(d$year)
+```
+So this is an integer. That is good.
+What about the range of values:
+```
+range(d$year, na.rm = TRUE)
+```
+```
+[1]    0 3894
+```
+
+## Price
+
+## Price and Bedrooms
+
+## Building and Lot Square Foot
+
+## 
