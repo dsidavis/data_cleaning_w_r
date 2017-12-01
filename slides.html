@@ -241,6 +241,17 @@ Matches **any** character.
 ```
 Can be extremely useful, or create havoc. Use caution.
 
+Common mistake: intend to match "." without escaping:
+
+```
+strings = c("www.google.com","wwwhat?!?")
+
+grep("www.", strings)
+[1] 1 2
+
+grep("www\\.", strings)
+[1] 1 
+```
 ---
 ## Character Classes
 
@@ -257,43 +268,87 @@ Matches any character in a set of specified characters inside of `[]`.
 Shorthand for classes of characters, include:
 
 + numbers: `[0-9]` or `[[:digit:]]`
+
 + letters: `[A-z]` (all), `[A-Z]` (uppercase), `[a-z]` (lowercase),
 `[[:alpha:]]`
-+ Alphanumeric: `[[:alnum:]]`
-+ space characters: `\t`, `\n`, `[[:space:]]`
+
++ alphanumeric: `[[:alnum:]]`
+
++ space characters: `[[:space:]]`, e.g. tab `\t` or space `\s`
+
++ punctuation: `[[:punct:]]`
+
+---
+## Character Classes (examples)
+
++ Any alphabetic
 
 ```
 > strings = c("Abc", "abc", "123", "Abc123")
 
-> grep("[A-z]", strings) # Any alphabetic
+> grep("[A-z]", strings) 
 [1] 1 2 4
+```
++ Any lower-case alphabetic
 
-> grep("[a-z]", strings) # Any lower-case alphabetic
+```
+> grep("[a-z]", strings) 
 [1] 1 2 4
+```
++ Any digit
 
-> grep("[0-9]", strings) # Any digit
+```
+> grep("[0-9]", strings) 
 [1] 3 4
+```
++ Any alphanumeric
 
-> grep("[A-z0-9]", strings) # Any alphanumeric
+```
+> grep("[A-z0-9]", strings)
 [1] 1 2 3 4
 ```
+---
+## Character Classes (examples, cont.)
 
+You can specify a partial range inside the `[]` as well
+
+```
+strings = c("a", "z", "1", "9")
+```
++ Only match letters "a" through "g"
+```
+> grep("[a-g]", strings)
+[1] 1 
+```
++ only match numbers 0 through 5
+```
+> grep("[0-5]", strings)
+[1] 4
+```
 ---
 ## Negated Character Classes
 
 Uses `^` inside of `[]` to negate the match, i.e., match everything
 except those characters.
-
 ```
 > strings = c("Abc", "abc", "123", "Abc123")
 
-> grep("[^A-z]", strings) # Contains non-alphabetic
+```
++ Contains non-alphabetic
+```
+> grep("[^A-z]", strings)
 [1] 3 4
+```
 
-> grep("[^a-z]", strings) # Contains non-lower case
++ Contains non-lower case
+```
+> grep("[^a-z]", strings)
 [1] 1 3 4
+```
 
-> grep("[^0-9]", strings) # contains non-digits
++ Contains any non-digit
+```
+> grep("[^0-9]", strings)
 [1] 3 4
 ```
 
@@ -318,10 +373,11 @@ of `[]`
 
 ## Alternation
 
-+ Matches multiple patterns by using the `|` (called the "pipe", shift + key above
+Matches multiple patterns by using the `|` (called the "pipe", shift + key above
 "Enter" key on US keyboards) 
 
 ```
+> strings = c("cat", "bat", "check", "China")
 > grep("hat|coat", strings)
 [1] 3 4
 ```
@@ -345,15 +401,15 @@ words. Specified with `\\b` (either end of word), `\\<` (beginning of
 word), or `\\>` (end of word)
 
 ```
-> strings = c("This", "is", "Mississippi.", "This is Mississippi.")
+> strings = c("This", "is", "Mississippi.")
 > grep("is", strings)
-[1] 1 2 3 4
+[1] 1 2 3 
 
 > grep("is\\>", strings)
-[1] 1 2 4
+[1] 1 2 
 
 > grep("\\bis\\b", strings)
-[1] 2 4
+[1] 2 
 ```
 
 ---
