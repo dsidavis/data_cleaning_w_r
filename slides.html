@@ -30,7 +30,8 @@ Cleaning Data, Regular Expressions, Reading Data
 <div style="padding-bottom: 70px">
 <div style="float: left; valign: top; padding-left: 80px;">
 Matt Espe <br/>
-Postdoc<br/>
+DSI &amp; Plant Sciences <br/>
+ Postdoc<br/>
 </div>
 <div style="float: right; valign: top; padding-right: 30px; padding-bottom: 20px;">
 Duncan Temple Lang <br/>
@@ -80,7 +81,12 @@ See [Barley.md](Barley.md)
 
 ---
 
-# The Data Life cycle
+# The Data Lifecycle
+
++ Reproducability is essential.
+   + Across sessions
+   + Code
+   + People
 
 Is this how we use data?
 
@@ -88,9 +94,9 @@ Is this how we use data?
 
 ---
 
-# Data Life cycle (cont.)
+# Data Lifecycle (cont.)
 
-+ In most cases, this is a cycle, not linear. E.g., 
++ In most cases, this is a cycle, not linear/sequential but highly iterative. E.g., 
 
   + Data created
   + Cleaned/processed 
@@ -100,6 +106,10 @@ Is this how we use data?
   + Clean so more
   + Share with others
   + They find issues! Go back to cleaning... 
+
++ Often, multiple people working on the data simulteneously in different stages/phases.
+  + even you have multiple roles
+  + writing code & fixing original file simultaneously
 
 + What if the original data is changed after it is cleaned?
 
@@ -144,22 +154,33 @@ But writing software is more effort (higher cost), requires more thought.
 
 # R Functions which use Regex
 
+
+
 + grep() and grepl()
-+ gregexpr() and regexpr()
-+ regmatches()
-+ sub() and gsub()
+   + Find which elements the pattern matches.  
++ gregexpr()/regexpr() and  regmatches()
+   + Find where in each element the pattern matches
++ sub()/gsub()
+   + Substitute text for pattern match. (Dynamic)
 + strsplit()
-+ agrep()
+   + Split a vector of strings, each into multiple elements
 + adist()
+   + Edit distance to see which strings are "close"
++ agrep()
+   + Fuzzy/approximate matching of a pattern
+
 
 + Others from stringr and stringi packages.
    + e.g. str_extract()
 
++ All Vectorized functions.
 
 ## Shell Commands
 
 + grep, egrep, ag
 + find
+
++ Regular expressions versus Shell globbing!
 ---
 
 # Regex Elements
@@ -167,6 +188,8 @@ But writing software is more effort (higher cost), requires more thought.
 + Literals
 
 + Wildcard Character  `.`
+
++ Escaping characters
 
 + Character Classes
 
@@ -211,18 +234,17 @@ Matches to the literal characters.
 
 ```
 
-Special characters `.()[]\^$` have to be escaped with double `\`
+```
+grep("cool", strings)
+```
+  Matches both.
 
 ```
-> strings = c("This is a period: '.' ", "There is no period here")
-
-> grep(".", strings)
-[1] 1 2
-
-> grep("\\.", strings)
-[1] 1
-
+grep("cooler", strings)
 ```
+ Matches just one.
+
+
 
 ---
 					
@@ -239,7 +261,14 @@ Matches **any** character.
 ```
 Can be extremely useful, or create havoc. Use caution.
 
-Common mistake: intend to match "." without escaping:
+---
+
+## Escaping Characters
+
+
++ So how do we find a . if it is treated as any character?
+
++ Common mistake: intend to match "." without escaping:
 
 ```
 strings = c("www.google.com","wwwhat?!?")
@@ -250,6 +279,9 @@ grep("www.", strings)
 grep("www\\.", strings)
 [1] 1 
 ```
+
+
+
 ---
 ## Character Classes
 
@@ -469,7 +501,45 @@ Really useful in `gsub()` to "grab" pieces out of a string:
 ```
 ---
 
+
+# All Special Characters
+
+Special characters include
+
++ ( and )
++ [ and ]
++ .
++ ^ $
++ \
++ * ? + { }
++ |
+
+
+
+```
+> strings = c("This is a period: '.' ", "There is no period here")
+
+> grep(".", strings)
+[1] 1 2
+
+> grep("\\.", strings)
+[1] 1
+
+```
+
+---
+
+
 ## Extensions
+
++ Like all languages, there are useful extensions, dialects
++ By default, R uses POSIX extended regular expressions
+   + perl = FALSE
++ Can use richer PCRE - Perl Compatible Regular Expressions
+   + perl = TRUE
+
++ Available in Perl, Python (but different), C++, etc.
+   + Check documentation and with example code.
 
 ---
 ### Non-greedy Matching
@@ -491,9 +561,21 @@ Really useful in `gsub()` to "grab" pieces out of a string:
 
 
 ---
+### Groups for backreferencs
+
++ Non-capture of groups
++ Named groups
+
+---
 
 
 # Reading Data
+
+Examples using regular expressions
+
++ [NASA Weather Data][nasa.html]
++ [Mannheim][mannheim.html]
+
     </textarea>
     <script src="https://remarkjs.com/downloads/remark-latest.min.js">
     </script>
