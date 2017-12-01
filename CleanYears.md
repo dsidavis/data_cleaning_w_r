@@ -358,7 +358,6 @@ grep(rx, rem, value = TRUE, invert = TRUE)
 ```
 So let's allow the two-digit end year:
 ```
-```
 rx = "[0-9]{4}-[0-9]{2,4}"
 grep(rx, rem, value = TRUE)
 grep(rx, rem, value = TRUE, invert = TRUE)
